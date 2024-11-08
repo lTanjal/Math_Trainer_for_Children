@@ -5,12 +5,18 @@ import {
   View,
   FlatList,
   TextInput,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
-import { Icon, ListItem, Button } from "@rneui/themed";
+import { Icon, ListItem, Button, Overlay, Image } from "@rneui/themed";
 import { useState, useEffect } from "react";
 import { mathTasksList } from "./MathTasksList";
 import generateTasks from "./TasksGenerator";
 import EmptyList from "./EmptyMathTasksList";
+import FetchCongratulations from "./FetchCongratulationsApi";
+import resultsChecker from "./ResultsChecker";
+import {useSaveResults} from "./MathResultsToDB";
+
 
 export default function MathPage({ navigation }) {
   const [expanded, setExpanded] = useState(false);
@@ -18,24 +24,74 @@ export default function MathPage({ navigation }) {
     name: "Please select a task",
   });
   const [resultsForm, setResultsForm] = useState([]);
+  const [correctAnswers, setCorrectAnswers]= useState()
+  const [visibleAnimation, setVisibleAnimation] = useState(false);
+  const [animationUrl, setAnimationUrl] = useState(null);
+  const [isVisibleButton, setIsVisibleButton] = useState(false);
+  const { saveMathResultsToDB } = useSaveResults();
+ 
+  const toggleOverlay = () => {
+    setVisibleAnimation(!visibleAnimation);
+    setResultsForm([]);
 
+  };
+
+  
   const defineEmptyMathListStyle = () => (
     <EmptyList isEmpty={taskSelection.taskNumber == null} />
   );
 
   console.log("This is task selection", taskSelection.taskNumber);
+
   const handlePress = (item) => {
     setTaskSelection(item);
     setExpanded(false);
     setResultsForm([]);
+    setIsVisibleButton(false);
     console.log(item);
   };
 
   const handleGenerate = () => {
     const newExamples = generateTasks(taskSelection); // Generate tasks based on selected task
     setResultsForm(newExamples); // Set resultsForm to the generated tasks
+    setIsVisibleButton(false); // Hide a "check answers" button
     console.log("Generated examples:", newExamples);
   };
+
+  const handleCheckResult=()=>{
+    const allFilled = resultsForm.every((item) => item.userResult !== "");
+      if (allFilled) {
+    const {updatedResultsForm, checkedAnswers} = resultsChecker(resultsForm)
+    setResultsForm(updatedResultsForm);// Set resultsForm to the checked results
+    saveMathResultsToDB(checkedAnswers, taskSelection); 
+    setIsVisibleButton(false);
+    
+
+  if(checkedAnswers===10){
+    setTimeout(() => {
+    FetchCongratulations()
+    .then ((data)=>{
+      if(data.results.length===0){
+        Alert.alert("Congratulations!!!");
+      } else{
+        
+       let setAnimation= data.results[0].media_formats.gif.url;
+       setAnimationUrl(setAnimation);  
+       toggleOverlay();
+
+       console.log(setAnimation)
+      }
+    })
+    .catch((err)=>console.error(err) 
+    );
+     
+  },1500)
+
+  }
+}else{
+  Alert.alert("Please fill all answers");
+}
+};
 
   const hendleResultsForm = (text, index) => {
     setResultsForm((prevResultsForm) => {
@@ -43,31 +99,19 @@ export default function MathPage({ navigation }) {
       newExamplesSet[index].userResult = text; // Update the userResult for the specific item
 
       const allFilled = newExamplesSet.every((item) => item.userResult !== "");
-
       // If all filled
       if (allFilled) {
-        newExamplesSet.forEach((item) => {
-          // Show or hide specific icon and correct result if the userResult is not or equal to sysResult
-          if (item.userResult != item.sysResult) {
-            item.iconSlashVisible = true;
-            item.iconOkVisible = false;
-            item.showSysResult = true;
-            // Set the Slash icon and correct result visible and hide Ok icon
-          } else {
-            item.iconSlashVisible = false;
-            item.iconOkVisible = true;
-            item.showSysResult = false;
-            // Hide Slash icon and set Ok icon visible
-          }
-        });
-
-        // Set the updated state only if all are filled
-        console.log("All inputs filled:", newExamplesSet);
+        setIsVisibleButton(true); 
       }
-      return newExamplesSet;
+
+   return newExamplesSet;
+
     });
   };
 
+
+       
+  
   const renderItem = ({ item, index }) => (
     <View flexDirection="row">
       <Text style={styles.examples}>{item.firstNum}</Text>
@@ -77,15 +121,18 @@ export default function MathPage({ navigation }) {
       {item.fourthNum && <Text style={styles.examples}>{item.fourthNum}</Text>}
       <Text style={styles.examples}>=</Text>
 
-      <View style={{ position: "relative" }}>
+      <View style={{ position: "relative" , width: '100%'}}>
+      {item.isChecked ? (
+        <Text style={styles.examples}>{item.userResult}</Text> // Display userResult as Text
+      ) : (
         <TextInput
           style={styles.examples}
-          placeholder="U result"
+          placeholder="___"
           value={item.userResult}
           onChangeText={(text) => hendleResultsForm(text, index)}
           keyboardType="numeric"
         />
-
+      )}
         {item.iconSlashVisible && (
           <Icon
             name="slash"
@@ -104,16 +151,17 @@ export default function MathPage({ navigation }) {
           <Text
             style={{
               position: "absolute",
-              left: 55,
-              fontSize: 24,
-              padding: 8,
+              left: 50,
+              top: "8%",
+              fontSize: 23,
+              color:"#d97915",
               fontWeight: "800",
+              
             }}
           >
             {item.sysResult}
           </Text>
         )}
-
         {item.iconOkVisible && (
           <Icon
             name="like"
@@ -122,7 +170,7 @@ export default function MathPage({ navigation }) {
             color="#22903e"
             containerStyle={{
               position: "absolute",
-              left: 55,
+              left: 45,
             }}
           />
         )}
@@ -132,6 +180,7 @@ export default function MathPage({ navigation }) {
 
   return (
     <View style={styles.container}>
+     
       <ListItem.Accordion
         content={
           <>
@@ -168,7 +217,8 @@ export default function MathPage({ navigation }) {
           ))}
         </ScrollView>
       </ListItem.Accordion>
-
+     
+      <View style={styles.buttonContainer}>
       <Button
         type="outline"
         buttonStyle={styles.buttonStyle}
@@ -185,13 +235,38 @@ export default function MathPage({ navigation }) {
           width: 100,
           height: 45,
           marginVertical: 10,
-          marginLeft: 10,
+        
         }}
         onPress={handleGenerate}
       >
         Start
       </Button>
-
+      {isVisibleButton && (
+      <Button
+        type="outline"
+        ali ="right"
+        buttonStyle={styles.buttonStyle}
+        titleStyle={{ color: "#0b67a2" }}
+        icon={{
+          name: "checklist",
+          type: "material",
+          size: 30,
+          color: "#d97915",
+          containerStyle: { marginRight: 10 },
+        }}
+        raised
+        containerStyle={{
+          width: 175,
+          height: 45,
+          marginVertical: 10,
+          marginLeft: 10,
+        }}
+       onPress={handleCheckResult}
+      >
+        Check answers
+      </Button>
+      )}
+      </View>
       <FlatList
         data={resultsForm}
         keyExtractor={(item, index) => index.toString()}
@@ -200,6 +275,14 @@ export default function MathPage({ navigation }) {
         removeClippedSubviews={false}
         ListEmptyComponent={defineEmptyMathListStyle}
       />
+      
+       <Overlay isVisible={visibleAnimation} onBackdropPress={toggleOverlay}>
+       
+       <Image
+       source={{ uri: animationUrl }}
+       containerStyle={styles.image}>
+        </Image> 
+      </Overlay>
     </View>
   );
 }
@@ -213,19 +296,22 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgrey",
   },
   examples: {
-    fontSize: 24,
-    padding: 8,
+    fontSize: 23,
+    padding: 5,
     fontWeight: "800",
   },
-  imputsAmount: {
-    alignSelf: "flex-end",
-    borderColor: "lightblue",
-    borderWidth: 2,
-    padding: 10,
-    width: "auto",
-    fontSize: 20,
-  },
+
   buttonStyle: {
     flexDirection: "row",
   },
+  image: {
+    width: 300,
+    height:300,
+   },
+   buttonContainer:{
+    flexDirection:"row",
+    justifyContent:'space-between',
+    width:'100%',
+    paddingHorizontal:16
+   }
 });

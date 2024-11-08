@@ -207,8 +207,8 @@ export default function generateTasks(selected) {
 
         do {
           const tensNum = (Math.floor(Math.random() * 9) + 1) * 10;
-          const number_1 = Math.floor(Math.random() * 9) + 1;
-          const number_2 = Math.floor(Math.random() * (10 - number_1)) + 1;
+          const number_1 = Math.floor(Math.random() * 8) + 2;
+          const number_2 = Math.floor(Math.random() * (9 - number_1)) + 2;
           const sign = number_1 > number_2 ? "-" : "+";
 
           let number1, number2, result;
@@ -597,8 +597,8 @@ export default function generateTasks(selected) {
         newExample2 = {
           firstNum: number1Ex2,
           mathSign: "+",
-          secondNum: "( " + number2Ex2,
-          thirdNum: "*  " + number3Ex2 + " )",
+          secondNum: "(" + number2Ex2,
+          thirdNum: "*  " + number3Ex2 + ")",
           sysResult: resultEx2,
           userResult: "",
         };
@@ -606,8 +606,8 @@ export default function generateTasks(selected) {
         newExample2 = {
           firstNum: number1Ex2,
           mathSign: "-",
-          secondNum: "( " + number2Ex2,
-          thirdNum: "*  " + number3Ex2 + " )",
+          secondNum: "(" + number2Ex2,
+          thirdNum: "*  " + number3Ex2 + ")",
           sysResult: resultEx2,
           userResult: "",
         };
@@ -624,8 +624,8 @@ export default function generateTasks(selected) {
         newExample3 = {
           firstNum: number3Ex3,
           mathSign: "*",
-          secondNum: "( " + number1Ex3,
-          thirdNum: "+  " + number2Ex3 + " )",
+          secondNum: "(" + number1Ex3,
+          thirdNum: "+  " + number2Ex3 + ")",
           sysResult: resultEx3,
           userResult: "",
         };
@@ -633,8 +633,8 @@ export default function generateTasks(selected) {
         newExample3 = {
           firstNum: number3Ex3,
           mathSign: "*",
-          secondNum: "( " + number1Ex3 + "  -",
-          thirdNum: number2Ex3 + " )",
+          secondNum: "(" + number1Ex3 + "  -",
+          thirdNum: number2Ex3 + ")",
           sysResult: resultEx3,
           userResult: "",
         };
@@ -649,9 +649,9 @@ export default function generateTasks(selected) {
 
       let resultEx4 = (number4Ex4 + number2Ex4) / number3Ex4;
       newExample4 = {
-        firstNum: "( " + number4Ex4,
+        firstNum: "(" + number4Ex4,
         mathSign: "+",
-        secondNum: number2Ex4 + " )",
+        secondNum: number2Ex4 + ")",
         thirdNum: "/  " + number3Ex4,
         sysResult: resultEx4,
         userResult: "",
@@ -807,9 +807,6 @@ export default function generateTasks(selected) {
       const number3Ex10 = Math.floor(Math.random() * 9) + 2;
       const number4Ex10 = Math.floor(Math.random() * 5) + 2;
       const preDevision_1Ex10 = number1Ex10 * number4Ex10;
-
-      const preDevision_2Ex10 =
-        number3Ex10 * number4Ex10 + preDevision_1Ex10 * number2Ex10;
 
       let resultEx10 =
         (number3Ex10 * number4Ex10 + preDevision_1Ex10 * number2Ex10) /
