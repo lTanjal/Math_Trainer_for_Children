@@ -1,15 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-  FlatList,
-  TextInput,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import { Icon, ListItem, Button, Overlay, Image } from "@rneui/themed";
-import { useState, useEffect } from "react";
+import {StyleSheet, Text, ScrollView, ActivityIndicator, View,FlatList, TextInput, Alert,} from "react-native";
+  import { Image } from 'expo-image';
+import { Icon, ListItem, Button, Overlay} from "@rneui/themed";
+import { useState } from "react";
 import { mathTasksList } from "./MathTasksList";
 import generateTasks from "./TasksGenerator";
 import EmptyList from "./EmptyMathTasksList";
@@ -24,12 +16,13 @@ export default function MathPage({ navigation }) {
     name: "Please select a task",
   });
   const [resultsForm, setResultsForm] = useState([]);
-  const [correctAnswers, setCorrectAnswers]= useState()
   const [visibleAnimation, setVisibleAnimation] = useState(false);
   const [animationUrl, setAnimationUrl] = useState(null);
   const [isVisibleButton, setIsVisibleButton] = useState(false);
   const { saveMathResultsToDB } = useSaveResults();
- 
+  const [loading, setLoading] = useState(false);
+
+
   const toggleOverlay = () => {
     setVisibleAnimation(!visibleAnimation);
     setResultsForm([]);
@@ -56,6 +49,18 @@ export default function MathPage({ navigation }) {
     setResultsForm(newExamples); // Set resultsForm to the generated tasks
     setIsVisibleButton(false); // Hide a "check answers" button
     console.log("Generated examples:", newExamples);
+    
+    FetchCongratulations()
+    .then (data=>{
+      let setAnimation= data.results[0].media_formats.gif.url;
+      setAnimationUrl(setAnimation);  
+   
+      console.log(setAnimation)
+    })
+    .catch(error=>{
+      console.error('Error in fetch Congratulations:', error);
+    })
+
   };
 
   const handleCheckResult=()=>{
@@ -65,33 +70,17 @@ export default function MathPage({ navigation }) {
     setResultsForm(updatedResultsForm);// Set resultsForm to the checked results
     saveMathResultsToDB(checkedAnswers, taskSelection); 
     setIsVisibleButton(false);
-    
-
-  if(checkedAnswers===10){
-    setTimeout(() => {
-    FetchCongratulations()
-    .then ((data)=>{
-      if(data.results.length===0){
-        Alert.alert("Congratulations!!!");
-      } else{
-        
-       let setAnimation= data.results[0].media_formats.gif.url;
-       setAnimationUrl(setAnimation);  
-       toggleOverlay();
-
-       console.log(setAnimation)
-      }
-    })
-    .catch((err)=>console.error(err) 
-    );
-     
-  },1500)
-
-  }
-}else{
-  Alert.alert("Please fill all answers");
-}
-};
+   
+      if(checkedAnswers===10){      //checkedAnswers is the number of correct answers from resultsChecker()
+        setLoading(true); 
+        setTimeout(() => {
+          toggleOverlay(),
+          setLoading(false);
+        },1000)}
+    }else{
+      Alert.alert("Please fill all answers");
+    }
+    };
 
   const hendleResultsForm = (text, index) => {
     setResultsForm((prevResultsForm) => {
@@ -109,9 +98,6 @@ export default function MathPage({ navigation }) {
     });
   };
 
-
-       
-  
   const renderItem = ({ item, index }) => (
     <View flexDirection="row">
       <Text style={styles.examples}>{item.firstNum}</Text>
@@ -196,7 +182,7 @@ export default function MathPage({ navigation }) {
               <ListItem.Title
                 style={{ color: "#0b67a2", fontWeight: "bold", fontSize: 20 }}
               >
-                {taskSelection.name ? taskSelection.name : "Accordion Title"}
+                {taskSelection.name}
               </ListItem.Title>
             </ListItem.Content>
           </>
@@ -244,7 +230,7 @@ export default function MathPage({ navigation }) {
       {isVisibleButton && (
       <Button
         type="outline"
-        ali ="right"
+        alignItems ="right"
         buttonStyle={styles.buttonStyle}
         titleStyle={{ color: "#0b67a2" }}
         icon={{
@@ -275,13 +261,33 @@ export default function MathPage({ navigation }) {
         removeClippedSubviews={false}
         ListEmptyComponent={defineEmptyMathListStyle}
       />
-      
-       <Overlay isVisible={visibleAnimation} onBackdropPress={toggleOverlay}>
-       
+      {loading && (
+          <ActivityIndicator size="large" color="#0b67a2" style={styles.spinner} />
+        )}
        <Image
-       source={{ uri: animationUrl }}
-       containerStyle={styles.image}>
-        </Image> 
+        source={{ uri: animationUrl }}
+        style={{width:0, height:0}} // Keep it hidden initially
+      /> 
+       <Overlay 
+       isVisible={visibleAnimation} 
+       onBackdropPress={toggleOverlay}
+       overlayStyle={{
+        alignItems: "center",
+        backgroundColor:"#ecf2ae"}}>
+         
+       {animationUrl ?(
+        <Image
+        source={{uri: animationUrl}}
+        contentFit="cover"
+        isAnimated
+        priority="high"
+        style={styles.image}>
+         </Image> 
+       ):(
+       <Image
+       source={require('./assets/gif/Congratulations.gif')}
+       style={styles.image}>
+        </Image> )}
       </Overlay>
     </View>
   );
@@ -313,5 +319,12 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     width:'100%',
     paddingHorizontal:16
-   }
+   },
+   spinner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -25, // Center spinner
+    marginTop: -25,  // Center spinner
+  },
 });
