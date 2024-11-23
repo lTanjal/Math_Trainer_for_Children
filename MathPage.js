@@ -1,5 +1,5 @@
 import {StyleSheet, Text, ScrollView, ActivityIndicator, View,FlatList, TextInput, Alert,} from "react-native";
-  import { Image } from 'expo-image';
+import { Image } from 'expo-image';
 import { Icon, ListItem, Button, Overlay} from "@rneui/themed";
 import { useState } from "react";
 import { mathTasksList } from "./MathTasksList";
@@ -52,10 +52,10 @@ export default function MathPage({ navigation }) {
     
     FetchCongratulations()
     .then (data=>{
-      let setAnimation= data.results[0].media_formats.gif.url;
+      let setAnimation= data.data[0].images.fixed_height.url;
       setAnimationUrl(setAnimation);  
    
-      console.log(setAnimation)
+      console.log("math page",setAnimation)
     })
     .catch(error=>{
       console.error('Error in fetch Congratulations:', error);

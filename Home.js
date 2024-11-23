@@ -74,9 +74,7 @@ export default function Home({navigation }) {
           <Text style={styles.blockText}>
             {"    "}
             Here you can view your results and identify areas where you excel
-            and where you may need a bit more practice. Additionally, you have
-            the option to share your results with family and friends, to
-            celebrate your successes together!
+            and where you may need a bit more practice.
           </Text>
           <Button
               type="outline"
@@ -108,8 +106,7 @@ export default function Home({navigation }) {
         <Text style={styles.blockText}>
           {" "}
           Here, you can translate unfamiliar words or entire sentences between
-          different languages and your native language. You can type or dictate
-          into the microphone, and the translation will appear in the nearby
+          different languages. Type your text and the translation will appear in the nearby
           window. Happy discovering!
         </Text>
         <Button
@@ -128,7 +125,7 @@ export default function Home({navigation }) {
             </Button>
       </View>
       </ScrollView>
-    </View>
+     </View>
   );
 }
 const styles = EStyleSheet.create({

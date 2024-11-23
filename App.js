@@ -1,6 +1,4 @@
 import { StatusBar } from "expo-status-bar";
-
-import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,7 +16,7 @@ export default function App() {
     "Playfair-Regular": require("./assets/fonts/PlayfairDisplay-Regular.otf"),
   });
   if (!fontsLoaded) {
-    return null; // Optionally, return a loading screen or spinner here
+    return null;
   }
   EStyleSheet.build({
     $customPlayfairRegularFont: "Playfair-Regular", // Custom font from assets

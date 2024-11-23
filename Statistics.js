@@ -1,17 +1,12 @@
-import {
-  StyleSheet,
-  FlatList,
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import {StyleSheet, FlatList, View, Text, TouchableOpacity, Alert} from "react-native";
 import { Icon, Dialog } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import { useEffect, useState } from "react";
 import { useSaveResults } from "./MathResultsToDB";
 import { mathTasksList } from "./MathTasksList";
 import { BarChart } from "react-native-gifted-charts";
+
+
 
 export default function Statistics(navigation) {
   const {
@@ -95,7 +90,7 @@ export default function Statistics(navigation) {
   }, [dbResults]);
 
   return (
-    <View style={styles.conteiner}>
+    <View style={styles.conteiner} >
       <View style={styles.column}>
         <View style={styles.columnsTitleView1}>
           <Icon
@@ -109,7 +104,7 @@ export default function Statistics(navigation) {
           />
           <Text style={styles.columnTitleText1}>Math task name</Text>
         </View>
-        <View style={styles.columnsTitleView2}>
+        <View style={styles.columnsTitleView2} >
           <Text style={styles.columnTitleText2}>Average{"\n"}grade</Text>
         </View>
       </View>
@@ -155,78 +150,80 @@ export default function Statistics(navigation) {
           </View>
         )}
       />
+     
+        <Dialog
+          isVisible={visible}
+          onBackdropPress={() => {
+            setVisible(false);
+            setSelectedItem();
+            setChartFormData();
+          }}
+         
+          overlayStyle={{
+            alignItems: "center",
+            padding: 10,
+            height: "80%",
+            width: "90%",
+          }}
+        >
+          <Dialog.Actions>
+              {selectedItem && (
+              <Text style={styles.columnTitleText1}>{selectedItem.name}</Text>
+            )}
+          </Dialog.Actions>
 
-      <Dialog
-        isVisible={visible}
-        onBackdropPress={() => {
-          setVisible(false);
-          setSelectedItem();
-          setChartFormData();
-        }}
-        overlayStyle={{
-          alignItems: "center",
-          padding: 10,
-          height: "73%",
-          width: "90%",
-        }}
-      >
-        <Dialog.Actions>
-          {selectedItem && (
-            <Text style={styles.columnTitleText1}>{selectedItem.name}</Text>
-          )}
-        </Dialog.Actions>
-
-        <View style={styles.dialogTextView}>
-          <Text style={styles.dialogText}>Total attempts: </Text>
-          {selectedItem && (
-            <Text style={styles.dialogNumbers}>{selectedItem.attempts}</Text>
-          )}
-        </View>
-        <View style={styles.dialogTextView}>
-          <Text style={styles.dialogText}>Total correct answers: </Text>
-          {selectedItem && (
-            <Text style={styles.dialogNumbers}>
-              {selectedItem.totalCorrectAnswers}
-            </Text>
-          )}
-        </View>
-       
-        <View style={styles.chartContainer}>
-        <View style={styles.dialogTextView}>
-          <Text style={{position: 'absolute',left:10,bottom:-2, fontSize:17, color: "#8e9fc5"}}>%</Text>
-        </View>
-          <BarChart
-            data={chartFormData}
-            width={250}
-            maxValue={100}
-            barWidth={39}
-            barBorderRadius={5}
-            showGradient
-            stepValue={10}
-            stepHeight={30}
-            spacing={10}
-            initialSpacing={15}
-            backgroundColor="#e7eeff"
-            showYAxisIndices
-            isAnimated
-            yAxisLabelWidth={35}
-            yAxisTextStyle={{ fontSize: 11, color: "#333",fontWeight: "bold", }}
-            yAxisThickness={2}
-            labelWidth={50}
-            xAxisLabelTexts={["All correct","9","8","7", "< 6"]}
-            labelsDistanceFromXaxis={3}
-            xAxisLabelTextStyle={{
-                color: "#333",
-                fontSize: 11, 
-                fontWeight: "bold",
-             }}
-            xAxisThickness={2}
-        />
-        <View style={styles.dialogTextView}>
-          <Text style={{position: 'absolute',left:60,top:5, fontSize:15, color: "#8e9fc5"}}>Correct answers per attempt</Text>
-        </View>
-        </View>
-      </Dialog>
+          <View style={styles.dialogTextView}>
+            <Text style={styles.dialogText}>Total attempts: </Text>
+            {selectedItem && (
+              <Text style={styles.dialogNumbers}>{selectedItem.attempts}</Text>
+            )}
+          </View>
+          <View style={styles.dialogTextView}>
+            <Text style={styles.dialogText}>Total correct answers: </Text>
+            {selectedItem && (
+              <Text style={styles.dialogNumbers}>
+                {selectedItem.totalCorrectAnswers}
+              </Text>
+            )}
+          </View>
+         
+          <View style={styles.chartContainer}>
+           <View style={styles.dialogTextView}>
+            <Text style={{position: 'absolute',left:10,bottom:-2, fontSize:17, color: "#8e9fc5"}}>%</Text>
+          </View>
+            <BarChart
+              data={chartFormData}
+              width={250}
+              maxValue={100}
+              barWidth={39}
+              barBorderRadius={5}
+              showGradient
+              stepValue={10}
+              stepHeight={30}
+              spacing={10}
+              initialSpacing={15}
+              backgroundColor="#e7eeff"
+              showYAxisIndices
+              isAnimated
+              yAxisLabelWidth={35}
+              yAxisTextStyle={{ fontSize: 11, color: "#333",fontWeight: "bold", }}
+              yAxisThickness={2}
+              labelWidth={50}
+              xAxisLabelTexts={["All correct","9","8","7", "< 6"]}
+              labelsDistanceFromXaxis={3}
+              xAxisLabelTextStyle={{
+                  color: "#333",
+                  fontSize: 11, 
+                  fontWeight: "bold",
+              }}
+              xAxisThickness={2}
+          />
+          <View style={styles.dialogTextView}>
+            <Text style={{position: 'absolute',left:60,top:5, fontSize:15, color: "#8e9fc5"}}>Correct answers per attempt</Text>
+          </View>
+         </View>
+       </Dialog>
+      
     </View>
   );
 }
