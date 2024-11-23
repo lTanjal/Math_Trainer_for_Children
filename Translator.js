@@ -68,7 +68,7 @@ export default function Translator(navigation) {
     setTranslated("");
   };
 
-  console.log("this is text to trans: ", textToTranslate);
+
   return (
     <View style={styles.conteiner}>
       <View
@@ -255,7 +255,9 @@ export default function Translator(navigation) {
           />
         </View>
         <View style={styles.inputTextBlocks}>
-          <TextInput style={styles.inputTextStyle} multiline>
+          <TextInput style={styles.inputTextStyle} 
+          multiline 
+          readOnly= {true}>
             {translated}
           </TextInput>
         </View>
