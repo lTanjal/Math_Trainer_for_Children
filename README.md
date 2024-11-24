@@ -55,5 +55,5 @@ All features are practical and relevant—nothing unnecessary, only tools to sup
 -	Data Visualization: Gifted Charts
 -	Image Resources: Pngegg
 8.  Necessary API keys for .env file
--   EXPO_PUBLIC_API_URL_GIPHY: [GIPHY Developers] (https://developers.giphy.com/) API key
+-   EXPO_PUBLIC_API_URL_GIPHY: [GIPHY Developers](https://developers.giphy.com) API key
 -   EXPO_PUBLIC_API_URL_MYMEMORY: [MyMemory](https://mymemory.translated.net/doc/spec.php) API key
