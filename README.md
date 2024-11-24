@@ -1,5 +1,5 @@
 # Math trainer and translator
-This mobile application is designed specifically for children, providing an interactive and engaging way to practice math skills. It also features a built-in translator, enabling quick translations of words or sentences across various languages to support learning and email functionality, allowing users to share progress with parents or peers, fostering communication and collaboration.
+This mobile application is designed specifically for children, providing an interactive and engaging way to practice math skills. It also features a built-in translator, enabling quick translations of words or sentences across various languages to support learning, and email functionality, allowing users to share progress with parents or peers, fostering communication and collaboration.
 
 ## A Clear and User-Friendly Interface
 The interface is simple and intuitive, designed with calm colors to create a soothing environment. It’s easy enough for a child to navigate and ensures no distractions, helping users focus on completing tasks.
@@ -14,6 +14,7 @@ Mathematical problems are divided into 23 topics. For each topic, you solve 10 e
 &nbsp&nbsp
 <img src="./assets/images/CheckedImg.jpg" alt="Image 1" width="250">
 </div>
+
 ## Track Your Progress
 You can monitor your progress on the results page, which stores information about completed tasks. Additionally, each topic has its own detailed results displayed through interactive graphs for a comprehensive overview.
 ## 
