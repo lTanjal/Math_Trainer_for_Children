@@ -15,9 +15,10 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "childrenmathtrainer": "file:",
     "expo": "~52.0.11",
-    "expo-contacts": "~14.0.2",
+    "expo-font": "~13.0.1",
     "expo-image": "~2.0.2",
     "expo-linear-gradient": "~14.0.1",
+    "expo-mail-composer": "~14.0.1",
     "expo-sqlite": "~15.0.3",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.1",
@@ -27,9 +28,7 @@
     "react-native-ratings": "^8.1.0",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.1.0",
-    "react-native-svg": "15.8.0",
-    "react-native-vector-icons": "^10.2.0",
-    "expo-mail-composer": "~14.0.1"
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

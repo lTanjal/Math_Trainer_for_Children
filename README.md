@@ -54,3 +54,7 @@ All features are practical and relevant—nothing unnecessary, only tools to sup
 -	UI Components: React Native Elements, React Native Ratings
 -	Data Visualization: Gifted Charts
 -	Image Resources: Pngegg
+8. .env
+    Necessary API keys:
+-   EXPO_PUBLIC_API_URL_GIPHY: GIPHY API key
+-   EXPO_PUBLIC_API_URL_MYMEMORY: MYMEMORY API key
